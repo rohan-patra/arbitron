@@ -10,7 +10,10 @@ export default function Sidebar() {
         <Link href="/wallet" className="mb-2">
           Wallet
         </Link>
-        <Link href="/agent-ui">Agent UI</Link>
+        <Link href="/agent-ui" className="mb-2">
+          Agent UI
+        </Link>
+        <Link href="/arbitrage-config">Arbitrage Config</Link>
       </nav>
     </aside>
   );

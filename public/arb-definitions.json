@@ -1,0 +1,249 @@
+{
+  "arbitrageDetectionConfig": {
+    "globalSettings": {
+      "scanInterval": 1000,
+      "maxConcurrentScans": 50,
+      "minProfitThreshold": 0.01,
+      "gasEstimationBuffer": 1.2
+    },
+    "arbitrageTypes": {
+      "crossChainSpotArbitrage": {
+        "enabled": true,
+        "priority": 1,
+        "scanInterval": 2000,
+        "detectionLogic": {
+          "type": "price_comparison",
+          "minSpread": 0.005,
+          "maxExecutionTime": 300,
+          "requiresInventory": true
+        },
+        "dataRequirements": [
+          "chainlink_price_feeds",
+          "dex_pool_data",
+          "bridge_fees",
+          "gas_prices"
+        ],
+        "executionRequirements": {
+          "bridgeSupport": true,
+          "inventoryManagement": true,
+          "crossChainMessaging": "ccip"
+        }
+      },
+      "cexDexArbitrage": {
+        "enabled": true,
+        "priority": 2,
+        "scanInterval": 1500,
+        "detectionLogic": {
+          "type": "price_comparison",
+          "minSpread": 0.008,
+          "maxExecutionTime": 120,
+          "requiresInventory": false
+        },
+        "dataRequirements": [
+          "cex_price_feeds",
+          "dex_pool_data",
+          "withdrawal_fees",
+          "deposit_times"
+        ],
+        "executionRequirements": {
+          "cexIntegration": true,
+          "fastWithdrawals": true,
+          "kycCompliance": true
+        }
+      },
+      "triangularArbitrage": {
+        "enabled": true,
+        "priority": 3,
+        "scanInterval": 1000,
+        "detectionLogic": {
+          "type": "cycle_detection",
+          "minCycleProfit": 0.003,
+          "maxCycleLength": 4,
+          "singleBlock": true
+        },
+        "dataRequirements": [
+          "dex_pool_data",
+          "token_pair_graph",
+          "liquidity_depth"
+        ],
+        "executionRequirements": {
+          "flashLoanSupport": false,
+          "atomicExecution": true,
+          "slippageCalculation": true
+        }
+      },
+      "flashLoanArbitrage": {
+        "enabled": true,
+        "priority": 4,
+        "scanInterval": 500,
+        "detectionLogic": {
+          "type": "leveraged_opportunity",
+          "minLeverage": 2,
+          "maxLeverage": 100,
+          "profitAfterFees": 0.01
+        },
+        "dataRequirements": [
+          "flash_loan_providers",
+          "lending_rates",
+          "dex_pool_data",
+          "liquidation_data"
+        ],
+        "executionRequirements": {
+          "flashLoanIntegration": ["aave", "dydx", "balancer"],
+          "atomicExecution": true,
+          "contractDeployment": true
+        }
+      },
+      "yieldArbitrage": {
+        "enabled": true,
+        "priority": 5,
+        "scanInterval": 10000,
+        "detectionLogic": {
+          "type": "rate_comparison",
+          "minRateSpread": 0.02,
+          "timeHorizon": 86400,
+          "compoundingFrequency": "daily"
+        },
+        "dataRequirements": [
+          "lending_rates",
+          "staking_yields",
+          "liquidity_mining_rewards",
+          "protocol_fees"
+        ],
+        "executionRequirements": {
+          "protocolIntegration": ["compound", "aave", "yearn"],
+          "yieldFarming": true,
+          "rebalancing": true
+        }
+      },
+      "liquidationArbitrage": {
+        "enabled": true,
+        "priority": 6,
+        "scanInterval": 3000,
+        "detectionLogic": {
+          "type": "liquidation_monitoring",
+          "healthFactorThreshold": 1.05,
+          "discountThreshold": 0.05,
+          "gasCompetition": true
+        },
+        "dataRequirements": [
+          "collateral_prices",
+          "health_factors",
+          "liquidation_thresholds",
+          "mempool_data"
+        ],
+        "executionRequirements": {
+          "mevProtection": true,
+          "priorityGas": true,
+          "frontrunningDefense": true
+        }
+      },
+      "fundingRateArbitrage": {
+        "enabled": false,
+        "priority": 7,
+        "scanInterval": 30000,
+        "detectionLogic": {
+          "type": "funding_rate_comparison",
+          "minRateSpread": 0.01,
+          "hedgingCost": 0.002,
+          "timeToExpiry": 28800
+        },
+        "dataRequirements": [
+          "perpetual_funding_rates",
+          "spot_prices",
+          "borrowing_costs",
+          "hedging_opportunities"
+        ],
+        "executionRequirements": {
+          "perpetualSupport": true,
+          "hedgingMechanism": true,
+          "marginManagement": true
+        }
+      },
+      "statisticalArbitrage": {
+        "enabled": false,
+        "priority": 8,
+        "scanInterval": 5000,
+        "detectionLogic": {
+          "type": "mean_reversion",
+          "lookbackPeriod": 86400,
+          "zScoreThreshold": 2.0,
+          "correlationThreshold": 0.8
+        },
+        "dataRequirements": [
+          "historical_prices",
+          "correlation_matrix",
+          "volatility_surface",
+          "market_microstructure"
+        ],
+        "executionRequirements": {
+          "pairTrading": true,
+          "riskManagement": true,
+          "portfolioRebalancing": true
+        }
+      },
+      "mevArbitrage": {
+        "enabled": false,
+        "priority": 9,
+        "scanInterval": 100,
+        "detectionLogic": {
+          "type": "mempool_monitoring",
+          "sandwichThreshold": 0.001,
+          "frontrunThreshold": 0.005,
+          "gasAuction": true
+        },
+        "dataRequirements": [
+          "mempool_transactions",
+          "pending_swaps",
+          "gas_price_oracle",
+          "block_space_auction"
+        ],
+        "executionRequirements": {
+          "blockBuilderAccess": true,
+          "privateMempool": true,
+          "gasOptimization": true
+        }
+      },
+      "optionsArbitrage": {
+        "enabled": false,
+        "priority": 10,
+        "scanInterval": 15000,
+        "detectionLogic": {
+          "type": "options_mispricing",
+          "impliedVolDifference": 0.05,
+          "deltaHedging": true,
+          "timeDecay": true
+        },
+        "dataRequirements": [
+          "options_prices",
+          "implied_volatility",
+          "greeks_calculation",
+          "spot_volatility"
+        ],
+        "executionRequirements": {
+          "optionsProtocols": ["opyn", "hegic", "premia"],
+          "hedgingMechanism": true,
+          "portfolioGreeks": true
+        }
+      }
+    },
+    "detectionPipeline": {
+      "dataIngestion": {
+        "sources": ["chainlink", "api3", "external_apis"],
+        "caching": true,
+        "validation": true
+      },
+      "opportunityScoring": {
+        "profitWeight": 0.4,
+        "riskWeight": 0.3,
+        "executionSpeedWeight": 0.2,
+        "competitionWeight": 0.1
+      },
+      "executionQueue": {
+        "prioritization": "profit_adjusted_score",
+        "conflictResolution": "highest_priority",
+        "resourceAllocation": "dynamic"
+      }
+    }
+  }
+}

@@ -70,7 +70,7 @@ export default function WalletPage() {
         const error = await response.json();
         alert(error.error ?? "Failed to withdraw funds");
       }
-    } catch (_error) {
+    } catch {
       alert("Failed to withdraw funds");
     } finally {
       setIsWithdrawing(false);
@@ -105,7 +105,7 @@ export default function WalletPage() {
         const error = await response.json();
         alert(error.error ?? "Failed to deposit funds");
       }
-    } catch (_error) {
+    } catch {
       alert("Failed to deposit funds");
     } finally {
       setIsDepositing(false);

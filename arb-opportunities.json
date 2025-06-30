@@ -1,0 +1,212 @@
+[
+  {
+    "id": "arb_1",
+    "type": "yieldArbitrage",
+    "profitPercent": 0.0497,
+    "maxFundAllocationUSD": 38313.35,
+    "durationSeconds": 373,
+    "startTime": "2025-06-30T05:25:09.638512",
+    "endTime": "2025-06-30T05:31:22.638512",
+    "chainsInvolved": ["arbitrum"],
+    "tokensInvolved": ["LINK", "USDC"],
+    "bridgesUsed": [],
+    "exchangesInvolved": {
+      "cex": ["Kraken", "Binance"],
+      "dex": []
+    },
+    "riskLevel": "low",
+    "executionSpeed": "standard",
+    "gasFeeUSD": 17.41,
+    "slippagePercent": 0.52,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_2",
+    "type": "crossChainSpotArbitrage",
+    "profitPercent": 0.0185,
+    "maxFundAllocationUSD": 61741.98,
+    "durationSeconds": 468,
+    "startTime": "2025-06-30T05:40:31.638512",
+    "endTime": "2025-06-30T05:48:19.638512",
+    "chainsInvolved": ["ethereum", "optimism"],
+    "tokensInvolved": ["MATIC", "UNI"],
+    "bridgesUsed": ["multichain", "wormhole"],
+    "exchangesInvolved": {
+      "cex": ["Binance"],
+      "dex": ["SushiSwap", "Curve"]
+    },
+    "riskLevel": "low",
+    "executionSpeed": "instant",
+    "gasFeeUSD": 3.69,
+    "slippagePercent": 0.63,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_3",
+    "type": "liquidationArbitrage",
+    "profitPercent": 0.0391,
+    "maxFundAllocationUSD": 4268.02,
+    "durationSeconds": 334,
+    "startTime": "2025-06-30T06:11:18.638512",
+    "endTime": "2025-06-30T06:16:52.638512",
+    "chainsInvolved": ["polygon"],
+    "tokensInvolved": ["USDC"],
+    "bridgesUsed": ["wormhole"],
+    "exchangesInvolved": {
+      "cex": ["Coinbase"],
+      "dex": []
+    },
+    "riskLevel": "high",
+    "executionSpeed": "fast",
+    "gasFeeUSD": 10.23,
+    "slippagePercent": 0.81,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_4",
+    "type": "flashLoanArbitrage",
+    "profitPercent": 0.049,
+    "maxFundAllocationUSD": 60468.0,
+    "durationSeconds": 549,
+    "startTime": "2025-06-30T05:59:32.638512",
+    "endTime": "2025-06-30T06:08:41.638512",
+    "chainsInvolved": ["arbitrum"],
+    "tokensInvolved": ["ETH"],
+    "bridgesUsed": ["multichain"],
+    "exchangesInvolved": {
+      "cex": ["FTX", "Kraken"],
+      "dex": ["Curve"]
+    },
+    "riskLevel": "low",
+    "executionSpeed": "fast",
+    "gasFeeUSD": 4.23,
+    "slippagePercent": 0.21,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_5",
+    "type": "triangularArbitrage",
+    "profitPercent": 0.0893,
+    "maxFundAllocationUSD": 27900.34,
+    "durationSeconds": 485,
+    "startTime": "2025-06-30T05:34:12.638512",
+    "endTime": "2025-06-30T05:42:17.638512",
+    "chainsInvolved": ["ethereum"],
+    "tokensInvolved": ["MATIC"],
+    "bridgesUsed": ["cbridge"],
+    "exchangesInvolved": {
+      "cex": ["Kraken", "Binance"],
+      "dex": ["Uniswap"]
+    },
+    "riskLevel": "low",
+    "executionSpeed": "fast",
+    "gasFeeUSD": 1.68,
+    "slippagePercent": 0.3,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_6",
+    "type": "cexDexArbitrage",
+    "profitPercent": 0.0371,
+    "maxFundAllocationUSD": 2584.65,
+    "durationSeconds": 273,
+    "startTime": "2025-06-30T05:39:03.638512",
+    "endTime": "2025-06-30T05:43:36.638512",
+    "chainsInvolved": ["arbitrum", "binance-smart-chain", "ethereum"],
+    "tokensInvolved": ["UNI", "USDC", "LINK"],
+    "bridgesUsed": [],
+    "exchangesInvolved": {
+      "cex": ["Binance"],
+      "dex": ["Curve", "Uniswap"]
+    },
+    "riskLevel": "high",
+    "executionSpeed": "economic",
+    "gasFeeUSD": 4.29,
+    "slippagePercent": 0.53,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_7",
+    "type": "yieldArbitrage",
+    "profitPercent": 0.0642,
+    "maxFundAllocationUSD": 52727.93,
+    "durationSeconds": 88,
+    "startTime": "2025-06-30T06:06:24.638512",
+    "endTime": "2025-06-30T06:07:52.638512",
+    "chainsInvolved": ["polygon", "optimism", "binance-smart-chain"],
+    "tokensInvolved": ["LINK"],
+    "bridgesUsed": ["layerzero", "multichain"],
+    "exchangesInvolved": {
+      "cex": ["FTX", "Kraken"],
+      "dex": ["SushiSwap", "Balancer"]
+    },
+    "riskLevel": "medium",
+    "executionSpeed": "standard",
+    "gasFeeUSD": 8.68,
+    "slippagePercent": 1.25,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_8",
+    "type": "flashLoanArbitrage",
+    "profitPercent": 0.0133,
+    "maxFundAllocationUSD": 29637.77,
+    "durationSeconds": 142,
+    "startTime": "2025-06-30T06:13:37.638512",
+    "endTime": "2025-06-30T06:15:59.638512",
+    "chainsInvolved": ["arbitrum", "polygon"],
+    "tokensInvolved": ["DAI", "ETH", "USDC"],
+    "bridgesUsed": [],
+    "exchangesInvolved": {
+      "cex": ["Coinbase", "Kraken"],
+      "dex": ["SushiSwap", "Curve"]
+    },
+    "riskLevel": "medium",
+    "executionSpeed": "economic",
+    "gasFeeUSD": 13.97,
+    "slippagePercent": 1.34,
+    "inventoryBased": true
+  },
+  {
+    "id": "arb_9",
+    "type": "flashLoanArbitrage",
+    "profitPercent": 0.0115,
+    "maxFundAllocationUSD": 30909.9,
+    "durationSeconds": 504,
+    "startTime": "2025-06-30T06:11:23.638512",
+    "endTime": "2025-06-30T06:19:47.638512",
+    "chainsInvolved": ["optimism"],
+    "tokensInvolved": ["DAI", "USDC", "LINK"],
+    "bridgesUsed": [],
+    "exchangesInvolved": {
+      "cex": ["Coinbase", "FTX"],
+      "dex": ["Uniswap", "Balancer"]
+    },
+    "riskLevel": "medium",
+    "executionSpeed": "instant",
+    "gasFeeUSD": 5.35,
+    "slippagePercent": 0.37,
+    "inventoryBased": false
+  },
+  {
+    "id": "arb_10",
+    "type": "yieldArbitrage",
+    "profitPercent": 0.0935,
+    "maxFundAllocationUSD": 39602.05,
+    "durationSeconds": 562,
+    "startTime": "2025-06-30T05:42:39.638512",
+    "endTime": "2025-06-30T05:52:01.638512",
+    "chainsInvolved": ["optimism"],
+    "tokensInvolved": ["LINK"],
+    "bridgesUsed": [],
+    "exchangesInvolved": {
+      "cex": ["Coinbase"],
+      "dex": ["Uniswap"]
+    },
+    "riskLevel": "medium",
+    "executionSpeed": "standard",
+    "gasFeeUSD": 2.8,
+    "slippagePercent": 0.93,
+    "inventoryBased": true
+  }
+]
