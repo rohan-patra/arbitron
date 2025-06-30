@@ -2,22 +2,23 @@ import { env } from '../env.js';
 
 export class OpenRouterClient {
   private apiKey: string;
-  private baseUrl = 'https://openrouter.ai/api/v1';
+  private baseUrl: string;
 
   constructor() {
-    this.apiKey = env.NEXT_PUBLIC_OPENROUTER_API_KEY;
+    this.apiKey = env.NEXT_PUBLIC_OPENAI_API_KEY;
+    this.baseUrl = env.NEXT_PUBLIC_OPENAI_BASE_URL;
   }
 
   async createCompletion(
     messages: Array<{ role: string; content: string }>,
-    model = 'anthropic/claude-3.5-sonnet',
+    model = 'gpt-4',
     options: {
       temperature?: number;
       maxTokens?: number;
       systemPrompt?: string;
     } = {}
   ) {
-    console.log('🌐 OpenRouter: Starting API call...', { model, messageCount: messages.length });
+    console.log('🌐 OpenAI: Starting API call...', { model, messageCount: messages.length });
     
     const systemMessage = options.systemPrompt
       ? [{ role: 'system', content: options.systemPrompt }]
@@ -30,32 +31,30 @@ export class OpenRouterClient {
       max_tokens: options.maxTokens ?? 2000,
     };
 
-    console.log('🌐 OpenRouter: Request body prepared, making fetch call...');
+    console.log('🌐 OpenAI: Request body prepared, making fetch call...');
 
     const response = await fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this.apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://arbitron-agent-framework.com',
-        'X-Title': 'Arbitron Agent Framework',
       },
       body: JSON.stringify(requestBody),
     });
 
-    console.log('🌐 OpenRouter: Received response:', response.status, response.statusText);
+    console.log('🌐 OpenAI: Received response:', response.status, response.statusText);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('🌐 OpenRouter: API error response:', errorText);
-      throw new Error(`OpenRouter API error: ${response.statusText} - ${errorText}`);
+      console.error('🌐 OpenAI: API error response:', errorText);
+      throw new Error(`OpenAI API error: ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('🌐 OpenRouter: Parsed response data:', data);
+    console.log('🌐 OpenAI: Parsed response data:', data);
     
     const content = data.choices[0]?.message?.content || '';
-    console.log('🌐 OpenRouter: Extracted content:', content?.substring(0, 200));
+    console.log('🌐 OpenAI: Extracted content:', content?.substring(0, 200));
     
     return content;
   }
@@ -68,7 +67,7 @@ export class OpenRouterClient {
           content: `Convert this user preference description into a structured schema: ${userInput}`
         }
       ],
-      'anthropic/claude-3.5-sonnet',
+      'gpt-4',
       {
         systemPrompt: `You are an expert quantitative analyst and portfolio manager specializing in DeFi arbitrage strategies. Your task is to convert natural language user preferences into precise, structured JSON schemas for algorithmic trading systems.
 
@@ -127,7 +126,7 @@ VALIDATION RULES:
           content: `Analyze this market data and identify arbitrage opportunities: ${JSON.stringify(marketData)}`
         }
       ],
-      'anthropic/claude-3.5-sonnet',
+      'gpt-4',
       {
         systemPrompt: `You are a senior quantitative researcher with expertise in DeFi market microstructure, MEV (Maximal Extractable Value), and cross-protocol arbitrage. You have deep knowledge of AMM mechanics, liquidity dynamics, and on-chain trading strategies.
 
@@ -189,7 +188,7 @@ RISK CLASSIFICATION:
           content: `Match these user preferences: ${JSON.stringify(preferences)} with these opportunities: ${JSON.stringify(opportunities)}`
         }
       ],
-      'anthropic/claude-3.5-sonnet',
+      'gpt-4',
       {
         systemPrompt: `You are a sophisticated portfolio optimization specialist with expertise in algorithmic trading, risk management, and DeFi yield strategies. You implement institutional-grade allocation models similar to those used by quantitative hedge funds.
 
@@ -295,7 +294,7 @@ ADVANCED CONSIDERATIONS:
           content: `Generate a ${messageType} message for agent communication. Context: ${context}`
         }
       ],
-      'anthropic/claude-3.5-sonnet',
+      'gpt-4',
       {
         systemPrompt: `You are the ${personality.role} in a sophisticated multi-agent arbitrage trading system. Your personality: ${personality.traits}
 

@@ -59,19 +59,21 @@ export default function TempTestPage() {
   useEffect(() => {
     // Set up comprehensive event listeners
     const handleAgentMessage = (message: AgentMessage) => {
-      addLog('agent', message.content, `${message.agentType} agent`, message);
+      // Show the actual agent message content with better formatting
+      const preview = message.content.length > 200 ? `${message.content.substring(0, 200)}...` : message.content;
+      addLog('agent', `💬 ${preview}`, `${message.agentType} agent`, message);
     };
 
     const handleOpportunityDiscovered = (opportunity: ArbitrageOpportunity) => {
-      addLog('system', `New opportunity discovered: ${opportunity.assetPair} (${opportunity.expectedReturn.toFixed(2)}% return)`, 'arbitrage agent', opportunity);
+      addLog('system', `🎯 NEW OPPORTUNITY: ${opportunity.assetPair} | ${opportunity.protocolA} → ${opportunity.protocolB} | ${opportunity.expectedReturn.toFixed(2)}% return | ${opportunity.risk} risk | $${opportunity.requiredCapital.toFixed(0)} capital`, 'arbitrage agent', opportunity);
     };
 
     const handleRecommendationGenerated = (recommendation: AllocationRecommendation) => {
-      addLog('system', `Allocation recommendation: $${recommendation.allocatedAmount.toFixed(0)} to ${recommendation.opportunityId}`, 'matching agent', recommendation);
+      addLog('system', `💡 RECOMMENDATION: Allocate $${recommendation.allocatedAmount.toFixed(0)} to opportunity ${recommendation.opportunityId} (${(recommendation.confidence * 100).toFixed(0)}% confidence)`, 'matching agent', recommendation);
     };
 
     const handlePreferencesProcessed = (schema: PreferenceSchema) => {
-      addLog('system', `User preferences processed: ${schema.preferences.riskTolerance} risk, $${schema.preferences.maxInvestment} max investment`, 'preference agent', schema);
+      addLog('system', `✅ USER PROFILE: ${schema.preferences.riskTolerance.toUpperCase()} risk tolerance | $${schema.preferences.maxInvestment.toLocaleString()} max investment | Assets: ${schema.preferences.preferredAssets.join(', ').toUpperCase()} | Min return: ${schema.preferences.minReturnRate}%`, 'preference agent', schema);
     };
 
     const handleSystemStarted = () => {
@@ -84,8 +86,7 @@ export default function TempTestPage() {
 
     // Handle system logs from orchestrator
     const handleSystemLog = (logData: any) => {
-      if (!showDebugLogs && logData.level === 'debug') return;
-      
+      // Don't filter debug logs here - let the UI filter them
       addLog(logData.level, logData.message, logData.source, logData.data);
     };
 
