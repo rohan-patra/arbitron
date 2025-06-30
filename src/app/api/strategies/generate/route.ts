@@ -30,7 +30,7 @@ Return ONLY the updated strategy object as valid JSON, preserving the same struc
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4",
+        model: "gpt-4.1",
         messages: [
           { role: "system", content: systemPrompt },
           {

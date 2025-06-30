@@ -7,6 +7,7 @@ import type { Strategy } from "~/types/strategy";
 const defaultStrategy: Omit<Strategy, "strategyId"> = {
   strategyName: "",
   description: "",
+  fundedAmount: 0,
   riskProfile: {
     riskTolerance: "moderate",
     maxDrawdown: 10,

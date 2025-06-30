@@ -7,15 +7,6 @@ export default function Header() {
         <Link href="/" className="text-2xl font-bold">
           Arbitron
         </Link>
-        <div>
-          <Link href="/dashboard" className="mr-4">
-            Dashboard
-          </Link>
-          <Link href="/strategies" className="mr-4">
-            Strategies
-          </Link>
-          <Link href="/portfolio">Portfolio</Link>
-        </div>
       </nav>
     </header>
   );

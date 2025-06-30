@@ -3,16 +3,17 @@
     "strategyId": "example-1",
     "strategyName": "Moderate Cross-Chain Arb",
     "description": "Focuses on moderate-risk, cross-chain DEX arbitrage with adjusted reserve ratio and risk parameters.",
+    "fundedAmount": 300,
     "riskProfile": {
       "riskTolerance": "moderate",
-      "maxDrawdown": 10,
-      "volatilityLimit": 20,
-      "concentrationLimit": 30
+      "maxDrawdown": 15,
+      "volatilityLimit": 25,
+      "concentrationLimit": 35
     },
     "capitalAllocation": {
-      "totalAllocation": 1000,
-      "reserveRatio": 40,
-      "maxPositionSize": 150,
+      "totalAllocation": 1200,
+      "reserveRatio": 35,
+      "maxPositionSize": 180,
       "minPositionSize": 10
     },
     "arbitrageTypes": {
@@ -25,7 +26,7 @@
       },
       "crossExchange": {
         "enabled": true,
-        "weight": 20,
+        "weight": 25,
         "cexToCex": true,
         "cexToDex": true,
         "dexToDex": true
@@ -38,8 +39,8 @@
       },
       "flashLoan": {
         "enabled": true,
-        "weight": 10,
-        "maxLeverageRatio": 2
+        "weight": 15,
+        "maxLeverageRatio": 3
       },
       "yieldArbitrage": {
         "enabled": false,
@@ -55,8 +56,13 @@
       "mevProtection": true
     },
     "chainPreferences": {
-      "preferredChains": ["ethereum", "arbitrum"],
-      "excludedChains": ["polygon"],
+      "preferredChains": [
+        "ethereum",
+        "arbitrum"
+      ],
+      "excludedChains": [
+        "polygon"
+      ],
       "l1Chains": {
         "enabled": true,
         "weight": 60
@@ -71,7 +77,9 @@
       }
     },
     "bridgePreferences": {
-      "preferredBridges": ["layerzero"],
+      "preferredBridges": [
+        "layerzero"
+      ],
       "excludedBridges": [],
       "maxBridgeFee": 10,
       "nativeBridges": {
@@ -84,11 +92,14 @@
       }
     },
     "tokenFilters": {
-      "allowedTokens": ["USDC", "ETH"],
+      "allowedTokens": [
+        "USDC",
+        "ETH"
+      ],
       "excludedTokens": [],
       "stablecoinsOnly": true,
       "minLiquidity": 100000,
-      "maxVolatility": 10,
+      "maxVolatility": 15,
       "minMarketCap": 10000000
     },
     "timeConstraints": {
@@ -102,12 +113,14 @@
       "rebalanceFrequency": 43200
     },
     "monitoring": {
-      "priceDataSources": ["chainlink"],
+      "priceDataSources": [
+        "chainlink"
+      ],
       "updateFrequency": 60000,
       "alertThresholds": {
-        "profitAlert": 100,
-        "lossAlert": 30,
-        "volumeAlert": 200000
+        "profitAlert": 150,
+        "lossAlert": 40,
+        "volumeAlert": 250000
       }
     },
     "riskManagement": {
@@ -116,15 +129,151 @@
         "threshold": 5
       },
       "positionLimits": {
-        "maxConcurrentTrades": 4,
-        "maxChainExposure": 60,
-        "maxProtocolExposure": 40
+        "maxConcurrentTrades": 5,
+        "maxChainExposure": 70,
+        "maxProtocolExposure": 50
       },
       "emergencyControls": {
         "pauseOnVolatility": true,
-        "pauseThreshold": 15,
+        "pauseThreshold": 20,
         "autoLiquidate": true
       }
     }
+  },
+  {
+    "strategyName": "Conservative Stablecoin DEX Arbitrage",
+    "description": "A conservative arbitrage strategy focused on stablecoin pairs across DEXes on Ethereum and Arbitrum, prioritizing capital preservation, low volatility, and strict risk controls.",
+    "fundedAmount": 500,
+    "riskProfile": {
+      "riskTolerance": "conservative",
+      "maxDrawdown": 3,
+      "volatilityLimit": 10,
+      "concentrationLimit": 15
+    },
+    "capitalAllocation": {
+      "totalAllocation": 1000,
+      "reserveRatio": 40,
+      "maxPositionSize": 100,
+      "minPositionSize": 25
+    },
+    "arbitrageTypes": {
+      "crossChain": {
+        "enabled": false,
+        "weight": 0,
+        "inventoryBased": false,
+        "bridgeBased": false,
+        "maxBridgeTime": 600
+      },
+      "crossExchange": {
+        "enabled": true,
+        "weight": 80,
+        "cexToCex": false,
+        "cexToDex": false,
+        "dexToDex": true
+      },
+      "triangular": {
+        "enabled": false,
+        "weight": 0,
+        "singleChain": false,
+        "crossChain": false
+      },
+      "flashLoan": {
+        "enabled": false,
+        "weight": 0,
+        "maxLeverageRatio": 1
+      },
+      "yieldArbitrage": {
+        "enabled": false,
+        "weight": 0,
+        "lendingProtocols": []
+      }
+    },
+    "executionParameters": {
+      "minProfitThreshold": 10,
+      "maxSlippage": 1,
+      "maxGasFee": 15,
+      "executionSpeed": "fast",
+      "mevProtection": true
+    },
+    "chainPreferences": {
+      "preferredChains": [
+        "ethereum",
+        "arbitrum"
+      ],
+      "excludedChains": [],
+      "l1Chains": {
+        "enabled": true,
+        "weight": 60
+      },
+      "l2Chains": {
+        "enabled": true,
+        "weight": 40
+      },
+      "sidechains": {
+        "enabled": false,
+        "weight": 0
+      }
+    },
+    "bridgePreferences": {
+      "preferredBridges": [
+        "layerzero"
+      ],
+      "excludedBridges": [],
+      "maxBridgeFee": 10,
+      "nativeBridges": {
+        "enabled": true,
+        "weight": 80
+      },
+      "multichainBridges": {
+        "enabled": true,
+        "weight": 20
+      }
+    },
+    "tokenFilters": {
+      "allowedTokens": [],
+      "excludedTokens": [],
+      "stablecoinsOnly": true,
+      "minLiquidity": 100000,
+      "maxVolatility": 5,
+      "minMarketCap": 1000000
+    },
+    "timeConstraints": {
+      "operatingHours": {
+        "enabled": false,
+        "timezone": "UTC",
+        "startTime": "00:00",
+        "endTime": "23:59"
+      },
+      "maxHoldingPeriod": 3600,
+      "rebalanceFrequency": 86400
+    },
+    "monitoring": {
+      "priceDataSources": [
+        "chainlink"
+      ],
+      "updateFrequency": 30000,
+      "alertThresholds": {
+        "profitAlert": 100,
+        "lossAlert": 50,
+        "volumeAlert": 500000
+      }
+    },
+    "riskManagement": {
+      "stopLoss": {
+        "enabled": true,
+        "threshold": 2
+      },
+      "positionLimits": {
+        "maxConcurrentTrades": 3,
+        "maxChainExposure": 25,
+        "maxProtocolExposure": 20
+      },
+      "emergencyControls": {
+        "pauseOnVolatility": true,
+        "pauseThreshold": 8,
+        "autoLiquidate": false
+      }
+    },
+    "strategyId": "strategy-1751257658202"
   }
 ]

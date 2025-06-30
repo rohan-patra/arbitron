@@ -2,6 +2,7 @@ export interface Strategy {
   strategyId: string;
   strategyName: string;
   description: string;
+  fundedAmount: number;
   riskProfile: {
     riskTolerance: "conservative" | "moderate" | "aggressive";
     maxDrawdown: number;
@@ -109,6 +110,13 @@ export interface Strategy {
   };
 }
 
+export interface UserData {
+  userId: string;
+  wallet: {
+    usdcBalance: number;
+  };
+}
+
 export interface OpenAIResponse {
   choices: Array<{
     message: {
@@ -116,3 +124,4 @@ export interface OpenAIResponse {
     };
   }>;
 }
+ 
