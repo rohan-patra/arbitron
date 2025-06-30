@@ -1,0 +1,130 @@
+[
+  {
+    "strategyId": "example-1",
+    "strategyName": "Moderate Cross-Chain Arb",
+    "description": "Focuses on moderate-risk, cross-chain DEX arbitrage with adjusted reserve ratio and risk parameters.",
+    "riskProfile": {
+      "riskTolerance": "moderate",
+      "maxDrawdown": 10,
+      "volatilityLimit": 20,
+      "concentrationLimit": 30
+    },
+    "capitalAllocation": {
+      "totalAllocation": 1000,
+      "reserveRatio": 40,
+      "maxPositionSize": 150,
+      "minPositionSize": 10
+    },
+    "arbitrageTypes": {
+      "crossChain": {
+        "enabled": true,
+        "weight": 70,
+        "inventoryBased": true,
+        "bridgeBased": true,
+        "maxBridgeTime": 600
+      },
+      "crossExchange": {
+        "enabled": true,
+        "weight": 20,
+        "cexToCex": true,
+        "cexToDex": true,
+        "dexToDex": true
+      },
+      "triangular": {
+        "enabled": false,
+        "weight": 0,
+        "singleChain": false,
+        "crossChain": false
+      },
+      "flashLoan": {
+        "enabled": true,
+        "weight": 10,
+        "maxLeverageRatio": 2
+      },
+      "yieldArbitrage": {
+        "enabled": false,
+        "weight": 0,
+        "lendingProtocols": []
+      }
+    },
+    "executionParameters": {
+      "minProfitThreshold": 5,
+      "maxSlippage": 2,
+      "maxGasFee": 15,
+      "executionSpeed": "fast",
+      "mevProtection": true
+    },
+    "chainPreferences": {
+      "preferredChains": ["ethereum", "arbitrum"],
+      "excludedChains": ["polygon"],
+      "l1Chains": {
+        "enabled": true,
+        "weight": 60
+      },
+      "l2Chains": {
+        "enabled": true,
+        "weight": 40
+      },
+      "sidechains": {
+        "enabled": false,
+        "weight": 0
+      }
+    },
+    "bridgePreferences": {
+      "preferredBridges": ["layerzero"],
+      "excludedBridges": [],
+      "maxBridgeFee": 10,
+      "nativeBridges": {
+        "enabled": true,
+        "weight": 80
+      },
+      "multichainBridges": {
+        "enabled": true,
+        "weight": 20
+      }
+    },
+    "tokenFilters": {
+      "allowedTokens": ["USDC", "ETH"],
+      "excludedTokens": [],
+      "stablecoinsOnly": true,
+      "minLiquidity": 100000,
+      "maxVolatility": 10,
+      "minMarketCap": 10000000
+    },
+    "timeConstraints": {
+      "operatingHours": {
+        "enabled": false,
+        "timezone": "UTC",
+        "startTime": "00:00",
+        "endTime": "23:59"
+      },
+      "maxHoldingPeriod": 7200,
+      "rebalanceFrequency": 43200
+    },
+    "monitoring": {
+      "priceDataSources": ["chainlink"],
+      "updateFrequency": 60000,
+      "alertThresholds": {
+        "profitAlert": 100,
+        "lossAlert": 30,
+        "volumeAlert": 200000
+      }
+    },
+    "riskManagement": {
+      "stopLoss": {
+        "enabled": true,
+        "threshold": 5
+      },
+      "positionLimits": {
+        "maxConcurrentTrades": 4,
+        "maxChainExposure": 60,
+        "maxProtocolExposure": 40
+      },
+      "emergencyControls": {
+        "pauseOnVolatility": true,
+        "pauseThreshold": 15,
+        "autoLiquidate": true
+      }
+    }
+  }
+]
