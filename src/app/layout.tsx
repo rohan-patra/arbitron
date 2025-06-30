@@ -1,4 +1,7 @@
-import "~/styles/globals.css";
+import Header from "~/components/layout/header";
+import Sidebar from "~/components/layout/sidebar";
+import Footer from "~/components/layout/footer";
+import "../app/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
@@ -19,7 +22,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`}>
-      <body>{children}</body>
+      <body className="flex min-h-screen flex-col">
+        <Header />
+        <div className="flex flex-1">
+          <Sidebar />
+          <main className="flex-1 bg-gray-50 p-6 dark:bg-gray-900">
+            {children}
+          </main>
+        </div>
+        <Footer />
+      </body>
     </html>
   );
 }
