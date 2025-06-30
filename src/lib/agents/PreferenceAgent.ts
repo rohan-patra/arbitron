@@ -23,17 +23,15 @@ export class PreferenceAgent extends EventEmitter {
     this.lastActivity = new Date();
 
     try {
-      // Try to generate schema using OpenRouter first
-      let preferences: UserPreferences;
+      console.log('🎯 PreferenceAgent: Starting OpenRouter API call...');
       
-      try {
-        const schemaResponse = await this.openRouter.generateSchema(userInput);
-        preferences = this.parsePreferencesFromAI(schemaResponse, userInput);
-      } catch (apiError) {
-        console.warn('OpenRouter API failed, using fallback parsing:', apiError);
-        // Fallback to manual parsing if API fails
-        preferences = this.extractPreferencesFromText(userInput);
-      }
+      // Generate schema using OpenRouter
+      const schemaResponse = await this.openRouter.generateSchema(userInput);
+      console.log('🎯 PreferenceAgent: Received OpenRouter response:', schemaResponse?.substring(0, 200));
+      
+      // Parse the AI response and create structured preferences
+      const preferences = this.parsePreferencesFromAI(schemaResponse, userInput);
+      console.log('🎯 PreferenceAgent: Parsed preferences:', preferences);
       
       const schema: PreferenceSchema = {
         id: `pref-${Date.now()}-${userId}`,
@@ -43,16 +41,18 @@ export class PreferenceAgent extends EventEmitter {
         constraints: this.generateConstraints(preferences),
       };
 
+      console.log('🎯 PreferenceAgent: Broadcasting preference update...');
       // Communicate with other agents
       await this.broadcastPreferenceUpdate(schema);
       
       this.status = 'idle';
       this.emit('schemaGenerated', schema);
+      console.log('🎯 PreferenceAgent: Schema generation completed successfully');
       
       return schema;
     } catch (error) {
       this.status = 'idle';
-      console.error('Error processing user preferences:', error);
+      console.error('🎯 PreferenceAgent: Error processing user preferences:', error);
       throw error;
     }
   }
@@ -122,83 +122,50 @@ export class PreferenceAgent extends EventEmitter {
   }
 
   private async broadcastPreferenceUpdate(schema: PreferenceSchema) {
-    try {
-      const message = await this.openRouter.generateAgentMessage(
-        'preference',
-        `New user preference schema generated: ${schema.preferences.riskTolerance} risk, ${schema.preferences.maxInvestment} max investment, preferred assets: ${schema.preferences.preferredAssets.join(', ')}`,
-        'info'
-      );
+    console.log('🎯 PreferenceAgent: Generating agent message via OpenRouter...');
+    
+    const message = await this.openRouter.generateAgentMessage(
+      'preference',
+      `New user preference schema generated: ${schema.preferences.riskTolerance} risk, ${schema.preferences.maxInvestment} max investment, preferred assets: ${schema.preferences.preferredAssets.join(', ')}`,
+      'info'
+    );
 
-      const agentMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'preference',
-        content: message,
-        messageType: 'info',
-        timestamp: new Date(),
-        data: schema,
-      };
+    console.log('🎯 PreferenceAgent: Generated message:', message?.substring(0, 100));
 
-      this.emit('message', agentMessage);
-    } catch (error) {
-      console.warn('OpenRouter API failed for broadcastPreferenceUpdate, using fallback:', error);
-      
-      // Fallback message
-      const fallbackMessage = `🎯 New user profile created: ${schema.preferences.riskTolerance.toUpperCase()} risk tolerance, $${schema.preferences.maxInvestment} budget, interested in ${schema.preferences.preferredAssets.join(', ')} with minimum ${schema.preferences.minReturnRate}% returns.`;
+    const agentMessage: AgentMessage = {
+      id: `msg-${Date.now()}`,
+      agentId: this.id,
+      agentType: 'preference',
+      content: message,
+      messageType: 'info',
+      timestamp: new Date(),
+      data: schema,
+    };
 
-      const agentMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'preference',
-        content: fallbackMessage,
-        messageType: 'info',
-        timestamp: new Date(),
-        data: schema,
-      };
-
-      this.emit('message', agentMessage);
-    }
+    this.emit('message', agentMessage);
+    console.log('🎯 PreferenceAgent: Message emitted successfully');
   }
 
   async respondToMessage(message: AgentMessage): Promise<void> {
     if (message.agentType === 'matching' && message.messageType === 'request') {
-      try {
-        // Respond to matching agent requests for preference clarification
-        const response = await this.openRouter.generateAgentMessage(
-          'preference',
-          `Responding to matching agent request: ${message.content}`,
-          'response'
-        );
+      // Respond to matching agent requests for preference clarification
+      const response = await this.openRouter.generateAgentMessage(
+        'preference',
+        `Responding to matching agent request: ${message.content}`,
+        'response'
+      );
 
-        const responseMessage: AgentMessage = {
-          id: `msg-${Date.now()}`,
-          agentId: this.id,
-          agentType: 'preference',
-          recipientId: message.agentId,
-          content: response,
-          messageType: 'response',
-          timestamp: new Date(),
-        };
+      const responseMessage: AgentMessage = {
+        id: `msg-${Date.now()}`,
+        agentId: this.id,
+        agentType: 'preference',
+        recipientId: message.agentId,
+        content: response,
+        messageType: 'response',
+        timestamp: new Date(),
+      };
 
-        this.emit('message', responseMessage);
-      } catch (error) {
-        console.warn('OpenRouter API failed for respondToMessage, using fallback:', error);
-        
-        // Fallback response
-        const fallbackResponse = `📋 I can help clarify user preferences. Currently managing preference schemas for risk tolerance, investment amounts, asset preferences, and return expectations.`;
-
-        const responseMessage: AgentMessage = {
-          id: `msg-${Date.now()}`,
-          agentId: this.id,
-          agentType: 'preference',
-          recipientId: message.agentId,
-          content: fallbackResponse,
-          messageType: 'response',
-          timestamp: new Date(),
-        };
-
-        this.emit('message', responseMessage);
-      }
+      this.emit('message', responseMessage);
     }
   }
 } 

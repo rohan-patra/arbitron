@@ -46,10 +46,10 @@ export default function TempTestPage() {
       const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
       if (apiKey && apiKey.length > 10) {
         setApiKeyStatus('valid');
-        addLog('system', 'OpenRouter API key detected and valid - AI features enabled', 'environment');
+        addLog('system', 'OpenRouter API key detected and valid', 'environment');
       } else {
         setApiKeyStatus('invalid');
-        addLog('warn', 'OpenRouter API key not found - using fallback mode (system will work but without AI-generated messages)', 'environment');
+        addLog('error', 'OpenRouter API key not found or invalid. Set NEXT_PUBLIC_OPENROUTER_API_KEY in your .env file', 'environment');
       }
     };
     
@@ -102,12 +102,14 @@ export default function TempTestPage() {
       setSystemStatus(orchestrator.getSystemStatus());
     }, 2000);
 
-    // Start the system automatically (now works with or without API key)
-    orchestrator.start().then(() => {
-      addLog('system', 'System initialized and ready for input', 'orchestrator');
-    }).catch((error) => {
-      addLog('error', `Failed to start system: ${error.message}`, 'orchestrator');
-    });
+    // Start the system automatically if API key is valid
+    if (apiKeyStatus === 'valid') {
+      orchestrator.start().then(() => {
+        addLog('system', 'System initialized and ready for input', 'orchestrator');
+      }).catch((error) => {
+        addLog('error', `Failed to start system: ${error.message}`, 'orchestrator');
+      });
+    }
 
     return () => {
       orchestrator.removeAllListeners();
@@ -122,6 +124,10 @@ export default function TempTestPage() {
 
   const processUserText = async () => {
     if (!userText.trim()) return;
+    if (apiKeyStatus !== 'valid') {
+      addLog('error', 'Cannot process input: OpenRouter API key is not valid', 'system');
+      return;
+    }
     
     setIsProcessing(true);
     addLog('user', `Processing input: "${userText.substring(0, 100)}${userText.length > 100 ? '...' : ''}"`, 'user');
@@ -130,19 +136,25 @@ export default function TempTestPage() {
       const userId = `user-${Date.now()}`;
       addLog('system', `Starting preference analysis for user ${userId}`, 'orchestrator');
       
+      console.log('🎯 Frontend: About to call orchestrator.processUserInput...');
       const schema = await orchestrator.processUserInput(userText, userId);
+      console.log('🎯 Frontend: Received schema from orchestrator:', schema);
       
-      addLog('system', `Preference analysis complete. Waiting for opportunities...`, 'orchestrator');
+      addLog('system', `✅ Preference analysis complete! Found: ${schema.preferences.riskTolerance} risk, $${schema.preferences.maxInvestment} max investment`, 'orchestrator');
+      
+      // Clear the input after successful processing
+      setUserText('');
       
       // Trigger a conversation about the user's preferences
       setTimeout(() => {
+        console.log('🎯 Frontend: Starting agent conversation simulation...');
         orchestrator.simulateAgentConversation(`user preferences: ${schema.preferences.riskTolerance} risk tolerance with ${schema.preferences.preferredAssets.join(', ')} assets`);
       }, 2000);
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      addLog('error', `Error processing input: ${errorMessage}`, 'system');
-      console.error('Error processing user text:', error);
+      addLog('error', `❌ Error processing input: ${errorMessage}`, 'system');
+      console.error('🎯 Frontend: Error processing user text:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -317,7 +329,7 @@ export default function TempTestPage() {
             </span>
             <button
               onClick={processUserText}
-              disabled={!userText.trim() || isProcessing || apiKeyStatus !== 'valid'}
+              disabled={!userText.trim() || isProcessing}
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? 'Processing...' : 'Process with Agents'}

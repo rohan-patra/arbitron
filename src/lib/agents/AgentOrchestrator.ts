@@ -311,25 +311,21 @@ export class AgentOrchestrator extends EventEmitter {
   async simulateAgentConversation(topic: string) {
     this.log('info', 'orchestrator', `Simulating agent conversation about: ${topic}`);
     
-    // Fallback conversations when API is not available
     const conversations = [
       {
         from: this.preferenceAgent.id,
         to: this.arbAgent.id,
-        message: `🎯 Hey Arbitrage Agent, I just processed a user who's interested in ${topic}. What opportunities do you see in this space?`,
-        fallback: `🎯 I've analyzed user preferences for ${topic}. Can you provide current market opportunities in this area?`
+        message: `Hey Arbitrage Agent, I just processed a user who's interested in ${topic}. What opportunities do you see in this space?`,
       },
       {
         from: this.arbAgent.id,
         to: this.matchingAgent.id,
-        message: `🔍 Matching Agent, I've found some ${topic} opportunities. The market is showing some interesting price discrepancies.`,
-        fallback: `🔍 I've identified several ${topic} opportunities with varying risk/return profiles. Ready for allocation analysis.`
+        message: `Matching Agent, I've found some ${topic} opportunities. The market is showing some interesting price discrepancies.`,
       },
       {
         from: this.matchingAgent.id,
         to: this.preferenceAgent.id,
-        message: `🤝 Preference Agent, can you clarify the risk tolerance for users interested in ${topic}? I want to make sure my allocations are appropriate.`,
-        fallback: `🤝 Need clarification on user risk parameters for ${topic} strategies to optimize allocation recommendations.`
+        message: `Preference Agent, can you clarify the risk tolerance for users interested in ${topic}? I want to make sure my allocations are appropriate.`,
       },
     ];
 
@@ -346,7 +342,7 @@ export class AgentOrchestrator extends EventEmitter {
         agentType: conv.from.includes('preference') ? 'preference' : 
                    conv.from.includes('arb') ? 'arbitrage' : 'matching',
         recipientId: conv.to,
-        content: conv.fallback, // Use fallback message directly
+        content: conv.message,
         messageType: 'info',
         timestamp: new Date(),
       };

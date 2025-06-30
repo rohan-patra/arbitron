@@ -157,42 +157,23 @@ export class ArbAgent extends EventEmitter {
   }
 
   private async announceOpportunity(opportunity: ArbitrageOpportunity) {
-    try {
-      const message = await this.openRouter.generateAgentMessage(
-        'arbitrage',
-        `New arbitrage opportunity found: ${opportunity.assetPair} between ${opportunity.protocolA} and ${opportunity.protocolB}, expected return: ${opportunity.expectedReturn.toFixed(2)}%, risk: ${opportunity.risk}`,
-        'alert'
-      );
+    const message = await this.openRouter.generateAgentMessage(
+      'arbitrage',
+      `New arbitrage opportunity found: ${opportunity.assetPair} between ${opportunity.protocolA} and ${opportunity.protocolB}, expected return: ${opportunity.expectedReturn.toFixed(2)}%, risk: ${opportunity.risk}`,
+      'alert'
+    );
 
-      const agentMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'arbitrage',
-        content: message,
-        messageType: 'alert',
-        timestamp: new Date(),
-        data: opportunity,
-      };
+    const agentMessage: AgentMessage = {
+      id: `msg-${Date.now()}`,
+      agentId: this.id,
+      agentType: 'arbitrage',
+      content: message,
+      messageType: 'alert',
+      timestamp: new Date(),
+      data: opportunity,
+    };
 
-      this.emit('message', agentMessage);
-    } catch (error) {
-      console.warn('OpenRouter API failed for announceOpportunity, using fallback message:', error);
-      
-      // Fallback message without AI generation
-      const fallbackMessage = `🚨 ARBITRAGE ALERT: Found ${opportunity.expectedReturn.toFixed(2)}% opportunity in ${opportunity.assetPair} between ${opportunity.protocolA} and ${opportunity.protocolB}. Risk: ${opportunity.risk}, Capital needed: $${opportunity.requiredCapital.toFixed(0)}`;
-
-      const agentMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'arbitrage',
-        content: fallbackMessage,
-        messageType: 'alert',
-        timestamp: new Date(),
-        data: opportunity,
-      };
-
-      this.emit('message', agentMessage);
-    }
+    this.emit('message', agentMessage);
   }
 
   private cleanupExpiredOpportunities() {
@@ -214,45 +195,25 @@ export class ArbAgent extends EventEmitter {
 
   async respondToMessage(message: AgentMessage): Promise<void> {
     if (message.agentType === 'matching' && message.messageType === 'request') {
-      try {
-        // Respond to matching agent requests for opportunity details
-        const response = await this.openRouter.generateAgentMessage(
-          'arbitrage',
-          `Providing opportunity details: ${this.getActiveOpportunities().length} active opportunities available`,
-          'response'
-        );
+      // Respond to matching agent requests for opportunity details
+      const response = await this.openRouter.generateAgentMessage(
+        'arbitrage',
+        `Providing opportunity details: ${this.getActiveOpportunities().length} active opportunities available`,
+        'response'
+      );
 
-        const responseMessage: AgentMessage = {
-          id: `msg-${Date.now()}`,
-          agentId: this.id,
-          agentType: 'arbitrage',
-          recipientId: message.agentId,
-          content: response,
-          messageType: 'response',
-          timestamp: new Date(),
-          data: this.getActiveOpportunities(),
-        };
+      const responseMessage: AgentMessage = {
+        id: `msg-${Date.now()}`,
+        agentId: this.id,
+        agentType: 'arbitrage',
+        recipientId: message.agentId,
+        content: response,
+        messageType: 'response',
+        timestamp: new Date(),
+        data: this.getActiveOpportunities(),
+      };
 
-        this.emit('message', responseMessage);
-      } catch (error) {
-        console.warn('OpenRouter API failed for respondToMessage, using fallback:', error);
-        
-        // Fallback response
-        const fallbackResponse = `📊 I currently have ${this.getActiveOpportunities().length} active arbitrage opportunities available for analysis. The opportunities span across different DEXs and asset pairs with varying risk levels.`;
-
-        const responseMessage: AgentMessage = {
-          id: `msg-${Date.now()}`,
-          agentId: this.id,
-          agentType: 'arbitrage',
-          recipientId: message.agentId,
-          content: fallbackResponse,
-          messageType: 'response',
-          timestamp: new Date(),
-          data: this.getActiveOpportunities(),
-        };
-
-        this.emit('message', responseMessage);
-      }
+      this.emit('message', responseMessage);
     }
   }
 } 

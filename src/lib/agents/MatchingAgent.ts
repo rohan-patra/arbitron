@@ -79,31 +79,20 @@ export class MatchingAgent extends EventEmitter {
       return [];
     }
 
-    // Try to use AI to generate sophisticated matching, with fallback
-    try {
-      const aiResponse = await this.openRouter.matchOpportunities(
-        preferences.preferences,
-        filteredOpportunities
-      );
+    // Use AI to generate sophisticated matching
+    const aiResponse = await this.openRouter.matchOpportunities(
+      preferences.preferences,
+      filteredOpportunities
+    );
 
-      // Parse AI response and create recommendations
-      const recommendations = this.parseRecommendationsFromAI(
-        aiResponse,
-        preferences,
-        filteredOpportunities
-      );
+    // Parse AI response and create recommendations
+    const recommendations = this.parseRecommendationsFromAI(
+      aiResponse,
+      preferences,
+      filteredOpportunities
+    );
 
-      return recommendations;
-    } catch (error) {
-      console.warn('OpenRouter API failed for matchOpportunities, using fallback logic:', error);
-      
-      // Fallback to manual matching logic
-      return this.parseRecommendationsFromAI(
-        '', // Empty AI response triggers fallback logic
-        preferences,
-        filteredOpportunities
-      );
-    }
+    return recommendations;
   }
 
   private filterOpportunitiesByPreferences(
@@ -268,44 +257,24 @@ export class MatchingAgent extends EventEmitter {
     recommendation: AllocationRecommendation,
     preferences: PreferenceSchema
   ) {
-    try {
-      const message = await this.openRouter.generateAgentMessage(
-        'matching',
-        `New allocation recommendation for user ${preferences.userId}: ${recommendation.reasoning}`,
-        'info'
-      );
+    const message = await this.openRouter.generateAgentMessage(
+      'matching',
+      `New allocation recommendation for user ${preferences.userId}: ${recommendation.reasoning}`,
+      'info'
+    );
 
-      const agentMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'matching',
-        content: message,
-        messageType: 'info',
-        timestamp: new Date(),
-        data: recommendation,
-      };
+    const agentMessage: AgentMessage = {
+      id: `msg-${Date.now()}`,
+      agentId: this.id,
+      agentType: 'matching',
+      content: message,
+      messageType: 'info',
+      timestamp: new Date(),
+      data: recommendation,
+    };
 
-      this.emit('message', agentMessage);
-      this.emit('recommendation', recommendation);
-    } catch (error) {
-      console.warn('OpenRouter API failed for announceRecommendation, using fallback:', error);
-      
-      // Fallback message
-      const fallbackMessage = `🤝 ALLOCATION RECOMMENDATION: ${recommendation.reasoning} Confidence: ${(recommendation.confidence * 100).toFixed(0)}%`;
-
-      const agentMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'matching',
-        content: fallbackMessage,
-        messageType: 'info',
-        timestamp: new Date(),
-        data: recommendation,
-      };
-
-      this.emit('message', agentMessage);
-      this.emit('recommendation', recommendation);
-    }
+    this.emit('message', agentMessage);
+    this.emit('recommendation', recommendation);
   }
 
   getUserRecommendations(userId: string): AllocationRecommendation[] {
@@ -313,42 +282,23 @@ export class MatchingAgent extends EventEmitter {
   }
 
   async respondToMessage(message: AgentMessage): Promise<void> {
-    try {
-      // Handle requests from other agents
-      const response = await this.openRouter.generateAgentMessage(
-        'matching',
-        `Processing request: ${message.content}`,
-        'response'
-      );
+    // Handle requests from other agents
+    const response = await this.openRouter.generateAgentMessage(
+      'matching',
+      `Processing request: ${message.content}`,
+      'response'
+    );
 
-      const responseMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'matching',
-        recipientId: message.agentId,
-        content: response,
-        messageType: 'response',
-        timestamp: new Date(),
-      };
+    const responseMessage: AgentMessage = {
+      id: `msg-${Date.now()}`,
+      agentId: this.id,
+      agentType: 'matching',
+      recipientId: message.agentId,
+      content: response,
+      messageType: 'response',
+      timestamp: new Date(),
+    };
 
-      this.emit('message', responseMessage);
-    } catch (error) {
-      console.warn('OpenRouter API failed for respondToMessage, using fallback:', error);
-      
-      // Fallback response
-      const fallbackResponse = `💼 Processing allocation requests. Currently managing ${this.userPreferences.size} user profiles and analyzing opportunities for optimal capital allocation.`;
-
-      const responseMessage: AgentMessage = {
-        id: `msg-${Date.now()}`,
-        agentId: this.id,
-        agentType: 'matching',
-        recipientId: message.agentId,
-        content: fallbackResponse,
-        messageType: 'response',
-        timestamp: new Date(),
-      };
-
-      this.emit('message', responseMessage);
-    }
+    this.emit('message', responseMessage);
   }
 } 

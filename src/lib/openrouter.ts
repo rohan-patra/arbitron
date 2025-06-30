@@ -17,9 +17,20 @@ export class OpenRouterClient {
       systemPrompt?: string;
     } = {}
   ) {
+    console.log('🌐 OpenRouter: Starting API call...', { model, messageCount: messages.length });
+    
     const systemMessage = options.systemPrompt
       ? [{ role: 'system', content: options.systemPrompt }]
       : [];
+
+    const requestBody = {
+      model,
+      messages: [...systemMessage, ...messages],
+      temperature: options.temperature ?? 0.7,
+      max_tokens: options.maxTokens ?? 2000,
+    };
+
+    console.log('🌐 OpenRouter: Request body prepared, making fetch call...');
 
     const response = await fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
@@ -29,20 +40,24 @@ export class OpenRouterClient {
         'HTTP-Referer': 'https://arbitron-agent-framework.com',
         'X-Title': 'Arbitron Agent Framework',
       },
-      body: JSON.stringify({
-        model,
-        messages: [...systemMessage, ...messages],
-        temperature: options.temperature ?? 0.7,
-        max_tokens: options.maxTokens ?? 2000,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
+    console.log('🌐 OpenRouter: Received response:', response.status, response.statusText);
+
     if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('🌐 OpenRouter: API error response:', errorText);
+      throw new Error(`OpenRouter API error: ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
-    return data.choices[0]?.message?.content || '';
+    console.log('🌐 OpenRouter: Parsed response data:', data);
+    
+    const content = data.choices[0]?.message?.content || '';
+    console.log('🌐 OpenRouter: Extracted content:', content?.substring(0, 200));
+    
+    return content;
   }
 
   async generateSchema(userInput: string): Promise<string> {
